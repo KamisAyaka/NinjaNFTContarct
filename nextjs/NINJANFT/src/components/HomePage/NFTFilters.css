@@ -1,0 +1,163 @@
+/* NFT 筛选器样式 - CryptoPunks 浅色主题 */
+.nft-filters {
+  max-width: 1400px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+}
+
+.filter-section {
+  margin-bottom: 30px;
+}
+
+.filter-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.level-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.level-btn {
+  padding: 12px 24px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.level-btn:hover {
+  border-color: var(--text-primary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.level-btn.active {
+  border-color: var(--text-primary);
+  background: var(--text-primary);
+  color: white;
+}
+
+.level-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: inline-block;
+  border: 1px solid;
+}
+
+.level-indicator.white {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.level-indicator.purple {
+  background: #8b5cf6;
+  border-color: #7c3aed;
+}
+
+.level-indicator.orange {
+  background: #f97316;
+  border-color: #ea580c;
+}
+
+.level-btn.level-white.active {
+  background: #6b7280;
+  border-color: #6b7280;
+}
+
+.level-btn.level-purple.active {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+.level-btn.level-orange.active {
+  background: #f97316;
+  border-color: #f97316;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 250px;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-select {
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+  background: var(--bg-secondary);
+  border-color: var(--text-primary);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.filter-select option {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .level-filters {
+    gap: 8px;
+  }
+
+  .level-btn {
+    padding: 10px 16px;
+    font-size: 0.875rem;
+  }
+
+  .filter-group {
+    max-width: 100%;
+  }
+
+  .filter-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .level-filters {
+    flex-direction: column;
+  }
+
+  .level-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
