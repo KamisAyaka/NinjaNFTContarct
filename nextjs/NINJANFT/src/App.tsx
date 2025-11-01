@@ -1,47 +1,36 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useInjectiveWallet } from "./hooks/useInjectiveWallet";
+import { useAccount } from "wagmi";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import WalletModal from "./components/WalletModal";
 import HomePage from "./pages/HomePage";
 import GalleryPage from "./pages/GalleryPage";
 import MyNFTsPage from "./pages/MyNFTsPage";
 import MintPage from "./pages/MintPage";
 import NFTDetailPage from "./pages/NFTDetailPage";
+import { evmContractService } from "./utils/evmContract";
 
 function App() {
-  const { address, isConnected } = useInjectiveWallet();
-  const [showWalletModal, setShowWalletModal] = useState(false);
+  const { address, isConnected } = useAccount();
+  const addressString = address || "";
 
   // Mint NFT 函数
-  const handleMint = async () => {
+  const handleMint = async (quantity: number) => {
     if (!isConnected || !address) {
-      alert("请先连接钱包");
-      return;
+      throw new Error("请先连接钱包");
     }
 
-    try {
-      // 这里添加实际的 Injective 合约 mint 逻辑
-      console.log("Minting NFT for address:", address);
-      // TODO: 调用 Injective 智能合约的 mint 函数
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      alert("NFT 铸造成功！");
-    } catch (error) {
-      console.error("铸造失败:", error);
-      alert("铸造失败: " + (error as Error).message);
-    }
+    console.log(`🔄 Minting ${quantity} NFT(s) for address:`, address);
+    
+    // 调用合约 mint 函数（内部会自动初始化）
+    const receipt = await evmContractService.mint(quantity);
+    
+    console.log("✅ Mint 成功:", receipt);
   };
 
   return (
     <Router>
       <div className="app-container">
-        <WalletModal
-          isOpen={showWalletModal}
-          onClose={() => setShowWalletModal(false)}
-        />
-
-        <Header onOpenWalletModal={() => setShowWalletModal(true)} />
+        <Header />
 
         <main className="main-content">
           <Routes>
@@ -51,7 +40,7 @@ function App() {
             <Route
               path="/my-nfts"
               element={
-                <MyNFTsPage address={address} isConnected={isConnected} />
+                <MyNFTsPage address={addressString} isConnected={isConnected} />
               }
             />
             <Route
@@ -59,7 +48,7 @@ function App() {
               element={
                 <MintPage
                   isConnected={isConnected}
-                  address={address}
+                  address={addressString}
                   onMint={handleMint}
                 />
               }

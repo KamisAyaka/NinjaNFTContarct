@@ -2,12 +2,13 @@
 // 共用组件
 export { default as Header } from './Header'
 export { default as Footer } from './Footer'
-export { default as WalletModal } from './WalletModal'
 export { default as NFTCard } from './NFTCard'
 
 // HomePage 专用组件
 export { default as CollectionStats } from './HomePage/CollectionStats'
 export { default as NFTFilters } from './HomePage/NFTFilters'
+export { default as NFTShowcase } from './HomePage/NFTShowcase'
+export { default as FAQ } from './HomePage/FAQ'
 
 // MintPage 专用组件
 export { default as NFTPreview } from './MintPage/NFTPreview'

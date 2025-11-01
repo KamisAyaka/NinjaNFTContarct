@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import "forge-std/Test.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "../src/NinjaNFTContarct.sol";
+import {Test} from "forge-std/Test.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {NinjaNFTContarct} from "../src/NinjaNFTContarct.sol";
 
 contract NinjaNFTContarctTest is Test {
     using Strings for uint256;
 
-    NinjaNFTContarct internal ninjaNFT;
+    NinjaNFTContarct internal ninjaNft;
 
     address internal constant MINTER = address(0xBEEF);
     address internal constant SECOND_MINTER = address(0xCAFE);
@@ -18,90 +18,90 @@ contract NinjaNFTContarctTest is Test {
     string internal constant BASE_URI = "https://ninja.example/api/";
 
     function setUp() public {
-        ninjaNFT = new NinjaNFTContarct(MAX_SUPPLY, MAX_PER_WALLET, BASE_URI);
+        ninjaNft = new NinjaNFTContarct(MAX_SUPPLY, MAX_PER_WALLET, BASE_URI);
     }
 
     function testInitialState() public view {
-        assertEq(ninjaNFT.maxSupply(), MAX_SUPPLY);
-        assertEq(ninjaNFT.maxPerWallet(), MAX_PER_WALLET);
-        assertEq(ninjaNFT.mintActive(), false);
-        assertEq(ninjaNFT.totalMinted(), 0);
+        assertEq(ninjaNft.MAX_SUPPLY(), MAX_SUPPLY);
+        assertEq(ninjaNft.MAX_PER_WALLET(), MAX_PER_WALLET);
+        assertEq(ninjaNft.mintActive(), false);
+        assertEq(ninjaNft.totalMinted(), 0);
     }
 
     function testMintFailsWhenClosed() public {
         vm.expectRevert(NinjaNFTContarct.MintClosed.selector);
-        ninjaNFT.mint(1);
+        ninjaNft.mint(1);
     }
 
     function testMintFailsForZeroQuantity() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
         vm.expectRevert(NinjaNFTContarct.QuantityZero.selector);
-        ninjaNFT.mint(0);
+        ninjaNft.mint(0);
     }
 
     function testMintFailsForNonZeroPayment() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
         vm.deal(MINTER, 1 ether);
         vm.prank(MINTER);
         vm.expectRevert(NinjaNFTContarct.NonZeroPayment.selector);
-        ninjaNFT.mint{value: 1}(1);
+        ninjaNft.mint{value: 1}(1);
     }
 
     function testMintSuccessUpdatesState() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
         vm.prank(MINTER);
-        ninjaNFT.mint(2);
+        ninjaNft.mint(2);
 
-        assertEq(ninjaNFT.totalMinted(), 2);
-        assertEq(ninjaNFT.minted(MINTER), 2);
-        assertEq(ninjaNFT.ownerOf(1), MINTER);
-        assertEq(ninjaNFT.ownerOf(2), MINTER);
+        assertEq(ninjaNft.totalMinted(), 2);
+        assertEq(ninjaNft.minted(MINTER), 2);
+        assertEq(ninjaNft.ownerOf(1), MINTER);
+        assertEq(ninjaNft.ownerOf(2), MINTER);
     }
 
     function testMintRespectsWalletCap() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
 
         vm.prank(MINTER);
-        ninjaNFT.mint(2);
+        ninjaNft.mint(2);
 
         vm.prank(MINTER);
         vm.expectRevert(NinjaNFTContarct.WalletLimitExceeded.selector);
-        ninjaNFT.mint(1);
+        ninjaNft.mint(1);
     }
 
     function testMintRespectsTotalSupply() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
 
         vm.prank(MINTER);
-        ninjaNFT.mint(2);
+        ninjaNft.mint(2);
 
         vm.prank(SECOND_MINTER);
-        ninjaNFT.mint(2);
+        ninjaNft.mint(2);
 
         vm.prank(address(0xD00D));
         vm.expectRevert(NinjaNFTContarct.SupplyExceeded.selector);
-        ninjaNFT.mint(2);
+        ninjaNft.mint(2);
     }
 
     function testBaseURIManagement() public {
-        ninjaNFT.setMintActive(true);
+        ninjaNft.setMintActive(true);
         vm.prank(MINTER);
-        ninjaNFT.mint(1);
+        ninjaNft.mint(1);
 
-        assertEq(ninjaNFT.tokenURI(1), string.concat(BASE_URI, uint256(1).toString()));
+        assertEq(ninjaNft.tokenURI(1), string.concat(BASE_URI, uint256(1).toString()));
 
         string memory updatedBase = "ipfs://hash/";
-        ninjaNFT.setBaseURI(updatedBase);
+        ninjaNft.setBaseURI(updatedBase);
 
-        assertEq(ninjaNFT.tokenURI(1), string.concat(updatedBase, uint256(1).toString()));
+        assertEq(ninjaNft.tokenURI(1), string.concat(updatedBase, uint256(1).toString()));
     }
 
     function testOwnerCanToggleMint() public {
-        ninjaNFT.setMintActive(true);
-        assertTrue(ninjaNFT.mintActive());
+        ninjaNft.setMintActive(true);
+        assertTrue(ninjaNft.mintActive());
 
-        ninjaNFT.setMintActive(false);
-        assertFalse(ninjaNFT.mintActive());
+        ninjaNft.setMintActive(false);
+        assertFalse(ninjaNft.mintActive());
     }
 
     function testConstructorRevertsForInvalidConfig() public {

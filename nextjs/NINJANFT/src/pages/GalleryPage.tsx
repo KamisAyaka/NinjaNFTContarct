@@ -5,13 +5,12 @@ import GallerySidebar from "../components/GalleryPage/GallerySidebar";
 import "./GalleryPage.css";
 
 // NFT等级类型
-type NFTLevel = "white" | "purple" | "orange";
+type NFTLevel = "white" | "purple";
 
 // 模拟NFT数据 - 包含等级信息
 const mockNFTs = Array.from({ length: 100 }, (_, i) => {
   let level: NFTLevel = "white";
-  if (i < 10) level = "orange"; // 10% 橙色(顶级)
-  else if (i < 30) level = "purple"; // 20% 紫色(资深)
+  if (i < 30) level = "purple"; // 30% 紫色(资深)
   else level = "white"; // 70% 白色(普通)
 
   return {
@@ -46,7 +45,7 @@ function GalleryPage() {
     .sort((a, b) => {
       switch (sortBy) {
         case "level":
-          const levelOrder = { orange: 0, purple: 1, white: 2 };
+          const levelOrder = { purple: 0, white: 1 };
           return levelOrder[a.level] - levelOrder[b.level];
         case "oldest":
           return a.id - b.id;

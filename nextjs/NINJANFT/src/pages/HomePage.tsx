@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import NFTShowcase from "../components/HomePage/NFTShowcase";
+import FAQ from "../components/HomePage/FAQ";
 
 function HomePage() {
   return (
@@ -59,9 +61,8 @@ function HomePage() {
               style={{ lineHeight: "1.8", marginBottom: "32px" }}
             >
               每个 Ninja
-              都是从不同的特征（发型、配饰、面部细节）中通过算法生成的，分为三个等级：70
-              个白色背景（普通贡献者）、20 个紫色背景（资深贡献者）和 10
-              个超稀有橙色背景（顶级贡献者）。没有两个是相同的。
+              都是从不同的特征（发型、配饰、面部细节）中通过算法生成的，分为两个等级：70
+              个白色背景（普通贡献者）和 30 个紫色背景（资深贡献者）。没有两个是相同的。
             </p>
 
             <p
@@ -147,6 +148,34 @@ function HomePage() {
               <div className="text-3xl font-bold text-primary">Injective</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* NFT 展示区域 */}
+      <div
+        className="section"
+        style={{
+          borderTop: "1px solid var(--border-color)",
+          paddingTop: "60px",
+          paddingBottom: "80px",
+        }}
+      >
+        <div className="container">
+          <NFTShowcase count={30} />
+        </div>
+      </div>
+
+      {/* Q&A 区域 */}
+      <div
+        className="section"
+        style={{
+          borderTop: "1px solid var(--border-color)",
+          paddingTop: "60px",
+          paddingBottom: "80px",
+        }}
+      >
+        <div className="container-sm">
+          <FAQ />
         </div>
       </div>
 

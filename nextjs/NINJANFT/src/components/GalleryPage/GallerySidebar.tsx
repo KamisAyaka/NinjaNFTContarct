@@ -1,6 +1,6 @@
 import "./GallerySidebar.css";
 
-type NFTLevel = "white" | "purple" | "orange";
+type NFTLevel = "white" | "purple";
 
 interface GallerySidebarProps {
   levelFilter: NFTLevel | "all";
@@ -72,15 +72,6 @@ function GallerySidebar({
           >
             <span className="level-indicator purple"></span>
             <span className="option-label">Purple</span>
-          </button>
-          <button
-            className={`sidebar-option level-option ${
-              levelFilter === "orange" ? "active" : ""
-            }`}
-            onClick={() => onLevelChange("orange")}
-          >
-            <span className="level-indicator orange"></span>
-            <span className="option-label">Orange</span>
           </button>
         </div>
       </div>

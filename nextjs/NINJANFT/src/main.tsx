@@ -1,20 +1,24 @@
-import { Buffer } from "buffer";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import "./styles/global.css";
 import App from "./App.tsx";
-import { InjectiveWalletProvider } from "./hooks/useInjectiveWallet";
+import { WagmiProvider } from "wagmi";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { wagmiConfig } from "./config/wagmi";
 
-// 添加 Buffer 到全局对象（Injective 钱包需要）
-if (!window.Buffer) {
-  window.Buffer = Buffer;
-}
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <InjectiveWalletProvider>
-      <App />
-    </InjectiveWalletProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
+          <App />
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </StrictMode>
 );

@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NFTPreview from "../components/MintPage/NFTPreview";
 import StatsGrid from "../components/MintPage/StatsGrid";
 import MintSection from "../components/MintPage/MintSection";
 import Message from "../components/MintPage/Message";
+import { evmContractService } from "../utils/evmContract";
 
 interface MintPageProps {
   isConnected: boolean;
   address: string;
-  onMint: () => Promise<void>;
+  onMint: (quantity: number) => Promise<void>;
 }
 
 function MintPage({ isConnected, address, onMint }: MintPageProps) {
@@ -15,8 +16,47 @@ function MintPage({ isConnected, address, onMint }: MintPageProps) {
   const [message, setMessage] = useState("");
   const [totalMinted, setTotalMinted] = useState(0);
   const [userMinted, setUserMinted] = useState(0);
-  const maxSupply = 10000;
-  const maxPerWallet = 10;
+  const [maxSupply, setMaxSupply] = useState(10000);
+  const [maxPerWallet, setMaxPerWallet] = useState(10);
+
+  // 从合约加载数据
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await evmContractService.init();
+
+        const [total, max, maxWallet] = await Promise.all([
+          evmContractService.getTotalMinted(),
+          evmContractService.getMaxSupply(),
+          evmContractService.getMaxPerWallet(),
+        ]);
+
+        setTotalMinted(total);
+        setMaxSupply(max);
+        setMaxPerWallet(maxWallet);
+      } catch (error) {
+        console.error("加载合约数据失败:", error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // 加载用户铸造数量
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (isConnected && address) {
+        try {
+          const userCount = await evmContractService.getMintedCount(address);
+          setUserMinted(userCount);
+        } catch (error) {
+          console.error("加载用户数据失败:", error);
+        }
+      }
+    };
+
+    loadUserData();
+  }, [isConnected, address]);
 
   const handleMint = async (quantity: number) => {
     if (!isConnected) {
@@ -41,10 +81,16 @@ function MintPage({ isConnected, address, onMint }: MintPageProps) {
       setLoading(true);
       setMessage("正在铸造NFT...");
 
-      await onMint();
+      await onMint(quantity);
 
-      setUserMinted(userMinted + quantity);
-      setTotalMinted(totalMinted + quantity);
+      // 重新加载数据
+      const [total, userCount] = await Promise.all([
+        evmContractService.getTotalMinted(),
+        evmContractService.getMintedCount(address),
+      ]);
+
+      setTotalMinted(total);
+      setUserMinted(userCount);
       setMessage(`成功铸造 ${quantity} 个 NFT!`);
     } catch (error) {
       console.error("铸造失败:", error);

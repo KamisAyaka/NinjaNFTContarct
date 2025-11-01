@@ -1,20 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { useInjectiveWallet } from "../hooks/useInjectiveWallet";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "./Header.css";
 
-interface HeaderProps {
-  onOpenWalletModal: () => void;
-}
-
-function Header({ onOpenWalletModal }: HeaderProps) {
+function Header() {
   const location = useLocation();
-  const { address, isConnected, isConnecting, disconnectWallet } =
-    useInjectiveWallet();
-
-  const formatAddress = (addr: string) => {
-    if (!addr) return "";
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
 
   const isActive = (path: string) => {
     return location.pathname === path ? "active" : "";
@@ -53,19 +42,7 @@ function Header({ onOpenWalletModal }: HeaderProps) {
         </div>
 
         <div className="header-right">
-          {!isConnected ? (
-            <button
-              className="connect-btn"
-              onClick={onOpenWalletModal}
-              disabled={isConnecting}
-            >
-              {isConnecting ? "Connecting..." : "Connect Wallet"}
-            </button>
-          ) : (
-            <button className="wallet-info" onClick={disconnectWallet}>
-              {formatAddress(address)}
-            </button>
-          )}
+          <ConnectButton />
         </div>
       </div>
     </header>

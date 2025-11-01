@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./NFTCard.css";
 
-type NFTLevel = "white" | "purple" | "orange";
+type NFTLevel = "white" | "purple";
 
 interface NFTCardProps {
   id: number;

@@ -12,8 +12,23 @@ export default defineConfig({
     alias: {
       buffer: "buffer/",
     },
+    dedupe: ["valtio"],
   },
   optimizeDeps: {
-    include: ["buffer"],
+    include: ["buffer", "valtio"],
+    esbuildOptions: {
+      target: "esnext",
+    },
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 });
