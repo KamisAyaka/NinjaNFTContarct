@@ -4,7 +4,10 @@ import { nodePolyfills } from "@bangjelkoski/vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), nodePolyfills({ protocolImports: true })],
+  plugins: [
+    react(), 
+    nodePolyfills({ protocolImports: true })
+  ],
   define: {
     global: "globalThis",
   },
@@ -28,6 +31,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: undefined,
+      },
+      onwarn(warning, warn) {
+        // 忽略 "use client" 警告
+        if (warning.code === "MODULE_LEVEL_DIRECTIVE" && warning.message.includes("use client")) {
+          return;
+        }
+        // 忽略循环依赖警告
+        if (warning.code === "CIRCULAR_DEPENDENCY") {
+          return;
+        }
+        // 其他警告正常输出
+        warn(warning);
       },
     },
   },
